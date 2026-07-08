@@ -82,6 +82,108 @@
     }
 
     /* ---------- Layout ---------- */
+    .music-toggle {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 20;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 1px solid rgba(207, 154, 86, 0.45);
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35));
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(70, 34, 63, 0.12);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .music-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(70, 34, 63, 0.18);
+    }
+
+    .music-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .music-toggle .bar {
+      fill: var(--gold);
+      transform-origin: bottom;
+      animation: musicBar 1.1s ease-in-out infinite;
+    }
+
+    .music-toggle.playing .bar1 {
+      animation-delay: 0s;
+    }
+
+    .music-toggle.playing .bar2 {
+      animation-delay: 0.15s;
+    }
+
+    .music-toggle.playing .bar3 {
+      animation-delay: 0.3s;
+    }
+
+    .music-toggle:not(.playing) .bar {
+      animation-play-state: paused;
+      transform: scaleY(0.4);
+    }
+
+    @keyframes musicBar {
+
+      0%,
+      100% {
+        transform: scaleY(0.4);
+      }
+
+      50% {
+        transform: scaleY(1);
+      }
+    }
+
+    .music-hint {
+      position: fixed;
+      right: 22px;
+      bottom: 82px;
+      z-index: 20;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 12.5px;
+      color: var(--plum-soft);
+      background: rgba(255, 250, 243, 0.85);
+      border: 1px solid rgba(207, 154, 86, 0.3);
+      padding: 6px 12px;
+      border-radius: 20px;
+      opacity: 0;
+      animation: riseIn 1s ease 4.4s forwards, fadeOutHint 1s ease 8s forwards;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    @keyframes fadeOutHint {
+      to {
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .music-hint {
+        font-size: 11px;
+        right: 16px;
+        bottom: 76px;
+      }
+
+      .music-toggle {
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+
     .wrap {
       position: relative;
       z-index: 2;
@@ -101,9 +203,9 @@
     }
 
     .lily-stage {
-      width: 300px;
-      height: 300px;
-      max-width: 70vw;
+      width: min(240px, 62vw);
+      aspect-ratio: 300 / 460;
+      height: auto;
       margin-bottom: 6px;
     }
 
@@ -368,20 +470,37 @@
 
   <div class="petal-field" id="petalField"></div>
 
+  <button class="music-toggle" id="musicToggle" aria-label="Play music" type="button">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <rect class="bar bar1" x="4" y="8" width="3" height="10" rx="1.5" />
+      <rect class="bar bar2" x="10.5" y="4" width="3" height="16" rx="1.5" />
+      <rect class="bar bar3" x="17" y="10" width="3" height="8" rx="1.5" />
+    </svg>
+  </button>
+  <span class="music-hint" id="musicHint">tap for a little music ♪</span>
+
+  <!-- Taruh file lagunya di folder yang sama dengan nama "song.mp3",
+     atau ganti src di bawah ini sesuai nama file lagumu -->
+  <audio autoplay id="bgMusic" src="mj.mp3" loop preload="none"></audio>
+
   <div class="wrap">
 
     <header class="hero">
       <div class="lily-stage">
-        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <radialGradient id="petalGrad" cx="50%" cy="85%" r="90%">
+            <radialGradient id="petalGrad" cx="50%" cy="88%" r="95%">
               <stop offset="0%" stop-color="#fffaf3" />
               <stop offset="55%" stop-color="#fdf1e6" />
-              <stop offset="100%" stop-color="#f2d9c9" />
+              <stop offset="100%" stop-color="#f0d5c4" />
             </radialGradient>
             <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#7a9b6e" />
-              <stop offset="100%" stop-color="#4f6f47" />
+              <stop offset="100%" stop-color="#42602f" />
+            </linearGradient>
+            <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#93b47f" />
+              <stop offset="100%" stop-color="#3f5c38" />
             </linearGradient>
             <radialGradient id="centerGrad" cx="50%" cy="50%" r="60%">
               <stop offset="0%" stop-color="#cf9a56" />
@@ -389,51 +508,63 @@
             </radialGradient>
           </defs>
 
-          <!-- stem & leaves -->
-          <path d="M150 300 C150 230 150 200 150 165" stroke="url(#stemGrad)" stroke-width="4" fill="none"
-            stroke-linecap="round" />
-          <path d="M150 240 C120 235 100 250 90 275" stroke="#5c7d52" stroke-width="4" fill="none"
-            stroke-linecap="round" opacity="0.85" />
-          <path d="M150 220 C182 214 205 226 216 250" stroke="#5c7d52" stroke-width="4" fill="none"
-            stroke-linecap="round" opacity="0.85" />
+          <!-- one full stem, base to bloom -->
+          <path d="M150 458 C147 400 153 330 149 268 C147 232 151 200 150 176" stroke="url(#stemGrad)" stroke-width="5"
+            fill="none" stroke-linecap="round" />
 
-          <!-- lily bloom group, animated -->
+          <!-- leaves along the stem, alternating -->
+          <g stroke="#3f5c38" stroke-width="0.6" fill="url(#leafGrad)">
+            <path d="M150,246 C120,238 92,247 74,274 C102,272 130,263 150,246 Z" opacity="0.94" />
+            <path d="M149,318 C182,308 210,319 227,349 C199,346 172,335 149,318 Z" opacity="0.94" />
+            <path d="M150,388 C120,381 96,392 80,418 C107,414 131,403 150,388 Z" opacity="0.9" />
+            <path d="M150,205 C168,199 187,205 197,222 C179,222 163,216 150,205 Z" opacity="0.9" />
+          </g>
+
+          <!-- lily bloom, one complete flower atop the stem -->
           <g class="lily-bloom" transform="translate(150,150)">
             <g class="petal p1">
-              <path d="M0,0 C-14,-30 -10,-72 0,-96 C10,-72 14,-30 0,0 Z" fill="url(#petalGrad)" stroke="#e7c4a9"
-                stroke-width="1" />
+              <path d="M0,0 C-16,-26 -19,-62 -12,-92 C-9,-104 -3,-110 0,-112 C3,-110 9,-104 12,-92 C19,-62 16,-26 0,0 Z"
+                fill="url(#petalGrad)" stroke="#e7c4a9" stroke-width="1" />
+              <path d="M0,-6 C0,-40 0,-76 0,-108" stroke="#eccdb4" stroke-width="0.7" opacity="0.7" />
             </g>
             <g class="petal p2" transform="rotate(60)">
-              <path d="M0,0 C-14,-30 -10,-72 0,-96 C10,-72 14,-30 0,0 Z" fill="url(#petalGrad)" stroke="#e7c4a9"
-                stroke-width="1" />
+              <path d="M0,0 C-16,-26 -19,-62 -12,-92 C-9,-104 -3,-110 0,-112 C3,-110 9,-104 12,-92 C19,-62 16,-26 0,0 Z"
+                fill="url(#petalGrad)" stroke="#e7c4a9" stroke-width="1" />
+              <path d="M0,-6 C0,-40 0,-76 0,-108" stroke="#eccdb4" stroke-width="0.7" opacity="0.7" />
             </g>
             <g class="petal p3" transform="rotate(120)">
-              <path d="M0,0 C-14,-30 -10,-72 0,-96 C10,-72 14,-30 0,0 Z" fill="url(#petalGrad)" stroke="#e7c4a9"
-                stroke-width="1" />
+              <path d="M0,0 C-16,-26 -19,-62 -12,-92 C-9,-104 -3,-110 0,-112 C3,-110 9,-104 12,-92 C19,-62 16,-26 0,0 Z"
+                fill="url(#petalGrad)" stroke="#e7c4a9" stroke-width="1" />
+              <path d="M0,-6 C0,-40 0,-76 0,-108" stroke="#eccdb4" stroke-width="0.7" opacity="0.7" />
             </g>
             <g class="petal p4" transform="rotate(180)">
-              <path d="M0,0 C-14,-30 -10,-72 0,-96 C10,-72 14,-30 0,0 Z" fill="url(#petalGrad)" stroke="#e7c4a9"
-                stroke-width="1" />
+              <path d="M0,0 C-16,-26 -19,-62 -12,-92 C-9,-104 -3,-110 0,-112 C3,-110 9,-104 12,-92 C19,-62 16,-26 0,0 Z"
+                fill="url(#petalGrad)" stroke="#e7c4a9" stroke-width="1" />
+              <path d="M0,-6 C0,-40 0,-76 0,-108" stroke="#eccdb4" stroke-width="0.7" opacity="0.7" />
             </g>
             <g class="petal p5" transform="rotate(240)">
-              <path d="M0,0 C-14,-30 -10,-72 0,-96 C10,-72 14,-30 0,0 Z" fill="url(#petalGrad)" stroke="#e7c4a9"
-                stroke-width="1" />
+              <path d="M0,0 C-16,-26 -19,-62 -12,-92 C-9,-104 -3,-110 0,-112 C3,-110 9,-104 12,-92 C19,-62 16,-26 0,0 Z"
+                fill="url(#petalGrad)" stroke="#e7c4a9" stroke-width="1" />
+              <path d="M0,-6 C0,-40 0,-76 0,-108" stroke="#eccdb4" stroke-width="0.7" opacity="0.7" />
             </g>
             <g class="petal p6" transform="rotate(300)">
-              <path d="M0,0 C-14,-30 -10,-72 0,-96 C10,-72 14,-30 0,0 Z" fill="url(#petalGrad)" stroke="#e7c4a9"
-                stroke-width="1" />
+              <path d="M0,0 C-16,-26 -19,-62 -12,-92 C-9,-104 -3,-110 0,-112 C3,-110 9,-104 12,-92 C19,-62 16,-26 0,0 Z"
+                fill="url(#petalGrad)" stroke="#e7c4a9" stroke-width="1" />
+              <path d="M0,-6 C0,-40 0,-76 0,-108" stroke="#eccdb4" stroke-width="0.7" opacity="0.7" />
             </g>
 
             <circle r="10" fill="url(#centerGrad)" />
             <g class="stamens">
-              <line x1="0" y1="0" x2="-16" y2="-30" stroke="#a8703a" stroke-width="1.5" />
-              <line x1="0" y1="0" x2="16" y2="-30" stroke="#a8703a" stroke-width="1.5" />
-              <line x1="0" y1="0" x2="-6" y2="-34" stroke="#a8703a" stroke-width="1.5" />
-              <line x1="0" y1="0" x2="6" y2="-34" stroke="#a8703a" stroke-width="1.5" />
-              <circle cx="-16" cy="-30" r="2.6" fill="#7a4d24" />
-              <circle cx="16" cy="-30" r="2.6" fill="#7a4d24" />
-              <circle cx="-6" cy="-34" r="2.6" fill="#7a4d24" />
-              <circle cx="6" cy="-34" r="2.6" fill="#7a4d24" />
+              <line x1="0" y1="0" x2="-18" y2="-34" stroke="#a8703a" stroke-width="1.5" />
+              <line x1="0" y1="0" x2="18" y2="-34" stroke="#a8703a" stroke-width="1.5" />
+              <line x1="0" y1="0" x2="-7" y2="-38" stroke="#a8703a" stroke-width="1.5" />
+              <line x1="0" y1="0" x2="7" y2="-38" stroke="#a8703a" stroke-width="1.5" />
+              <line x1="0" y1="0" x2="0" y2="-40" stroke="#a8703a" stroke-width="1.5" />
+              <circle cx="-18" cy="-34" r="2.7" fill="#7a4d24" />
+              <circle cx="18" cy="-34" r="2.7" fill="#7a4d24" />
+              <circle cx="-7" cy="-38" r="2.7" fill="#7a4d24" />
+              <circle cx="7" cy="-38" r="2.7" fill="#7a4d24" />
+              <circle cx="0" cy="-40" r="2.7" fill="#7a4d24" />
             </g>
           </g>
         </svg>
@@ -578,7 +709,7 @@
 
     .lily-bloom {
       animation: gentleSway 6s ease-in-out 2.6s infinite;
-      transform-origin: 150px 260px;
+      transform-origin: 150px 176px;
     }
 
     @keyframes gentleSway {
@@ -636,6 +767,36 @@
         });
       }, { threshold: 0.25 });
       wishes.forEach(w => io.observe(w));
+    })();
+    // ---------- Background music: plays an audio file you provide ----------
+    (function () {
+      const toggleBtn = document.getElementById('musicToggle');
+      const hint = document.getElementById('musicHint');
+      const audio = document.getElementById('bgMusic');
+      let isPlaying = false;
+
+      toggleBtn.addEventListener('click', function () {
+        if (hint) hint.style.display = 'none';
+        if (isPlaying) {
+          audio.pause();
+          isPlaying = false;
+          toggleBtn.classList.remove('playing');
+          toggleBtn.setAttribute('aria-label', 'Play music');
+        } else {
+          audio.play().catch(() => {
+            alert('Taruh file lagunya (mis. song.mp3) di folder yang sama dengan file HTML ini, lalu sesuaikan nama file di tag <audio id="bgMusic">.');
+          });
+          isPlaying = true;
+          toggleBtn.classList.add('playing');
+          toggleBtn.setAttribute('aria-label', 'Pause music');
+        }
+      });
+
+      audio.addEventListener('ended', function () {
+        isPlaying = false;
+        toggleBtn.classList.remove('playing');
+        toggleBtn.setAttribute('aria-label', 'Play music');
+      });
     })();
   </script>
 
