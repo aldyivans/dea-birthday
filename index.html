@@ -152,6 +152,55 @@
       animation: riseIn 1.2s ease 3.3s forwards;
     }
 
+    .age-badge {
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      animation: riseIn 1.2s ease 3.5s forwards;
+    }
+
+    .age-badge .age-num {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 2.6rem;
+      color: var(--gold);
+      line-height: 1;
+      position: relative;
+      padding-right: 16px;
+    }
+
+    .age-badge .age-num::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 8%;
+      height: 84%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--rose-deep), transparent);
+    }
+
+    .age-badge .age-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.02rem;
+      letter-spacing: 0.04em;
+      color: var(--plum-soft);
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    .age-badge .age-date {
+      font-family: 'Jost', sans-serif;
+      font-style: normal;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rose-deep);
+    }
+
     .scroll-hint {
       margin-top: 56px;
       font-size: 11px;
@@ -397,6 +446,10 @@
       </h1>
       <p class="sub">A lily for the one who blooms quietly, beautifully, and entirely on her own terms. Here's to you
         today, and every day after.</p>
+      <div class="age-badge">
+        <span class="age-num">23</span>
+        <span class="age-text">years of you<br><span class="age-date">born July 6th, 2003</span></span>
+      </div>
       <p class="scroll-hint">scroll down ↓</p>
     </header>
 
